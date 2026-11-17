@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<style>
+{{CSS}}
+</style>
+</head>
+<body>
+<div id="loading" role="status" aria-live="polite">
+  <div id="loading-status">Carregando…</div>
+  <div class="track"><div class="bar-fill" id="loading-bar"></div></div>
+</div>
+
+<div class="app">
+  <header class="top">
+    <div>
+      <div class="brand-eyebrow"><span class="dot"></span><span id="eyebrow">PNL 2035 · CENÁRIO REFERENCIAL</span></div>
+      <h1 id="h1">Matriz OD <span>Pessoas</span></h1>
+    </div>
+    <div class="top-kpis" id="kpis"></div>
+  </header>
+
+  <div class="notice hidden" id="data-notice" role="note"></div>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" aria-label="Seções">
+      <button role="tab" id="tab-pessoas" data-tab="pessoas" aria-selected="true">Pessoas</button>
+      <button role="tab" id="tab-cargas" data-tab="cargas" aria-selected="false">Cargas</button>
+      <button role="tab" id="tab-agg" data-tab="agg" aria-selected="false">UF &amp; corredores</button>
+    </div>
+    <div class="tools">
+      <label class="field hidden" id="scn-wrap"><span>Cenário</span>
+        <select class="sel" id="scn-select" aria-label="Cenário"></select></label>
+      <label class="field hidden" id="cmp-wrap"><span>Comparar com</span>
+        <select class="sel" id="cmp-select" aria-label="Comparar com outro cenário"></select></label>
+      <div class="menu" id="export-menu">
+        <button class="btn" id="export-btn" aria-haspopup="true" aria-expanded="false">⭳ Exportar</button>
+        <div class="menu-list" role="menu">
+          <button role="menuitem" data-exp="csv-rank">CSV · ranking atual</button>
+          <button role="menuitem" data-exp="csv-uf">CSV · matriz UF × UF</button>
+          <button role="menuitem" data-exp="csv-ufsum">CSV · resumo por UF</button>
+          <button role="menuitem" data-exp="png-map">PNG · mapa</button>
+          <button role="menuitem" data-exp="png-sankey">PNG · diagrama de Sankey</button>
+          <button role="menuitem" data-exp="print">PDF · imprimir página</button>
+        </div>
+      </div>
+      <button class="btn" id="link-btn" title="Copia o link com filtros e seleção atuais">🔗 Copiar link</button>
+      <button class="btn" id="theme-btn" aria-label="Alternar tema claro/escuro">☾ / ☀</button>
+    </div>
+  </div>
+
+  <!-- ============ VISÃO OD ============ -->
+  <section id="view-od" aria-label="Fluxos origem-destino">
+    <div class="controls">
+      <div class="search-wrap">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search-input" type="text" role="combobox" aria-expanded="false" aria-controls="search-results" aria-label="Buscar cidade" placeholder="Buscar por qualquer cidade…" autocomplete="off">
+        <div class="search-results" id="search-results" role="listbox"></div>
+      </div>
+      <div class="toggle-group" id="dir-toggle" role="group" aria-label="Direção">
+        <button data-dir="origem" class="active" aria-pressed="true">Origem</button>
+        <button data-dir="destino" aria-pressed="false">Destino</button>
+      </div>
+      <label class="field"><span id="cat-label">Modal</span><select class="sel" id="cat-select"></select></label>
+      <label class="field"><span>UF/região de origem</span><select class="sel" id="fo-select"></select></label>
+      <label class="field"><span>UF/região de destino</span><select class="sel" id="fd-select"></select></label>
+      <button class="btn" id="clear-btn">✕ limpar</button>
+    </div>
+    <div class="controls row2">
+      <label class="field"><span>Mapa</span>
+        <select class="sel" id="mode-select">
+          <option value="pontos">Pontos &amp; fluxos</option>
+          <option value="uf">Coroplético · UF</option>
+          <option value="mun">Coroplético · município</option>
+        </select></label>
+      <label class="field" id="metric-wrap"><span>Métrica (coroplético)</span>
+        <select class="sel" id="metric-select">
+          <option value="saidas">Saídas</option>
+          <option value="entradas">Entradas</option>
+          <option value="saldo">Saldo (entradas − saídas)</option>
+          <option value="tkm">Volume × km (saídas)</option>
+        </select></label>
+      <label class="field"><span>Rota rodoviária</span>
+        <select class="sel" id="route-select">
+          <option value="off">Arco (linha de desejo)</option>
+          <option value="pre">Rota — pré-calculada</option>
+          <option value="live">Rota — pré-calc. + consulta online</option>
+        </select></label>
+      <span id="overlay-ctl" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="overlay-add" type="button">＋ camada GeoJSON</button>
+        <input type="file" id="overlay-file" accept=".geojson,.json,application/geo+json,application/json" class="hidden" multiple>
+      </span>
+    </div>
+
+    <div class="selection-banner" id="selection-banner">
+      <span class="pill" id="banner-pill">—</span>
+      <span id="banner-arrow" aria-hidden="true">→</span>
+      <span id="banner-label" style="color:var(--text-muted)">principais destinos</span>
+      <span class="stat">soma dos fluxos <b id="banner-total">–</b></span>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-head"><div>
+          <div class="panel-title">Mapa</div>
+          <div class="panel-sub" id="map-sub">—</div></div></div>
+        <div id="map-wrap">
+          <div id="leaflet-map" role="application" aria-label="Mapa interativo"></div>
+          <div class="map-tooltip" id="map-tooltip"></div>
+          <div class="map-legend" id="map-legend"></div>
+          <div class="map-status" id="map-status"></div>
+        </div>
+        <div class="legend-row" id="map-legend-row"></div>
+      </div>
+      <div class="panel" id="sankey-panel">
+        <div class="map-tooltip" id="sankey-tip"></div>
+        <div class="panel-head"><div>
+          <div class="panel-title" id="sankey-title">Fluxo por modal</div>
+          <div class="panel-sub" id="sankey-sub">—</div></div></div>
+        <svg id="sankey-svg" viewBox="0 0 640 440" role="img" aria-label="Diagrama de Sankey dos maiores fluxos; os mesmos dados estão no ranking abaixo"></svg>
+        <div class="legend-row" id="cat-legend"></div>
+      </div>
+    </div>
+
+    <div class="grid one"><div class="panel">
+      <div class="panel-head"><div>
+        <div class="panel-title">Indicadores</div>
+        <div class="panel-sub" id="ind-sub">—</div></div></div>
+      <div class="ind-grid" id="ind-grid"></div>
+      <p class="note" id="ind-note"></p>
+    </div></div>
+
+    <div class="grid one"><div class="panel">
+      <div class="panel-head"><div>
+        <div class="panel-title">Ranking de conexões</div>
+        <div class="panel-sub" id="rank-sub">—</div></div></div>
+      <div id="rank-list"></div>
+      <div class="rank-more" id="rank-more"></div>
+    </div></div>
+  </section>
+
+  <!-- ============ VISÃO UF & CORREDORES ============ -->
+  <section id="view-agg" class="hidden" aria-label="Análise por UF e corredores">
+    <div class="controls row2" style="margin-bottom:12px">
+      <label class="field"><span>Base de dados</span>
+        <select class="sel" id="agg-ds"><option value="pessoas">Pessoas</option><option value="cargas">Cargas</option></select></label>
+      <label class="field"><span id="agg-cat-label">Modal</span><select class="sel" id="agg-cat"></select></label>
+      <label class="field"><span>Agrupar por</span>
+        <select class="sel" id="agg-level"><option value="uf">UF</option><option value="macro">Macrorregião</option></select></label>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-head"><div>
+          <div class="panel-title">Matriz origem × destino</div>
+          <div class="panel-sub" id="agg-matrix-sub">clique numa célula para filtrar o par</div></div></div>
+        <svg id="uf-matrix" role="img" aria-label="Mapa de calor origem-destino entre UFs; os valores estão na tabela ao lado"></svg>
+        <p class="note">Linhas = origem · colunas = destino. Cor em escala raiz-quadrada para que os fluxos menores continuem visíveis. A escala usa só fluxos entre regiões diferentes; a diagonal (fluxo interno) aparece em cinza — valores no mouse-over. A matriz ignora os filtros geográficos.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div>
+          <div class="panel-title">Maiores corredores (par origem → destino)</div>
+          <div class="panel-sub" id="agg-corr-sub">—</div></div></div>
+        <div class="tbl-wrap" style="max-height:640px"><table class="tbl" id="corr-tbl"></table></div>
+      </div>
+    </div>
+    <div class="grid one"><div class="panel">
+      <div class="panel-head"><div>
+        <div class="panel-title">Resumo por região</div>
+        <div class="panel-sub" id="agg-sum-sub">clique no cabeçalho para ordenar</div></div></div>
+      <div class="tbl-wrap"><table class="tbl" id="sum-tbl"></table></div>
+      <p class="note" id="agg-sum-note"></p>
+    </div></div>
+  </section>
+
+  <footer class="foot">
+    <span id="foot-src"></span>
+    <span id="foot-note"></span>
+  </footer>
+</div>
+
+{{DATA}}
+<script>
+{{VENDOR_JS}}
+</script>
+<script>
+(function(){
+'use strict';
+{{APP_JS}}
+})();
+</script>
+</body>
+</html>

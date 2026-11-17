@@ -1,0 +1,25 @@
+{
+  "output": "dist/matriz_od.html",
+  "titulo": "Matriz OD 2035 — Inteligência de Planejamento",
+  "scenarios": [
+    {
+      "id": "ref2035",
+      "label": "Referencial 2035",
+      "pessoas_zip": "od-pessoas-2035-referencial.zip",
+      "cargas_zip": "od-cargas-2035-referencial.zip",
+      "pasta_interna": "2035_referencial"
+    }
+  ],
+  "fonte": {
+    "orgao": "EPL — Empresa de Planejamento e Logística S.A. (Plano Nacional de Logística 2035)",
+    "portal": "https://portal.epl.gov.br/plano-nacional-de-logistica-2035",
+    "portal_ontl": "https://ontl.epl.gov.br/planejamento-pnl-2035/",
+    "url_download_exata": null,
+    "observacao": "Os ZIPs foram recebidos diretamente; a URL exata de download não foi confirmada. Preencha 'url_download_exata' quando conhecida."
+  },
+  "rotas": {
+    "osrm_url": "https://router.project-osrm.org",
+    "top_pares_pessoas": 548,
+    "top_pares_cargas": 400
+  }
+}

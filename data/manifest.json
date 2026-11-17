@@ -1,0 +1,144 @@
+{
+ "gerado_em": "2026-10-01T11:30:15",
+ "versao_build": "2.0.0",
+ "fonte": {
+  "orgao": "EPL — Empresa de Planejamento e Logística S.A. (Plano Nacional de Logística 2035)",
+  "portal": "https://portal.epl.gov.br/plano-nacional-de-logistica-2035",
+  "portal_ontl": "https://ontl.epl.gov.br/planejamento-pnl-2035/",
+  "url_download_exata": null,
+  "observacao": "Os ZIPs foram recebidos diretamente; a URL exata de download não foi confirmada. Preencha 'url_download_exata' quando conhecida."
+ },
+ "arquivos": {
+  "od-pessoas-2035-referencial.zip": {
+   "sha256": "5371c23bf028da4f2e1941fc4d94fba13ed2e3b392ee1052edc6a0a2dc1e2fbf",
+   "bytes": 563294,
+   "membros": {
+    "2035_referencial/": 0,
+    "2035_referencial/dicionario_dados.xlsx": 15111,
+    "2035_referencial/matriz_pessoas.csv": 1667576,
+    "2035_referencial/municipios.csv": 144110,
+    "2035_referencial/utp.csv": 32941
+   }
+  },
+  "od-cargas-2035-referencial.zip": {
+   "sha256": "c588643d1b8645495c0e6c0596e650b8077d57a582b34e1dbbdf779e38d693e1",
+   "bytes": 59431088,
+   "membros": {
+    "2035_referencial/": 0,
+    "2035_referencial/dicionario_dados.xlsx": 14173,
+    "2035_referencial/matriz_cargas.csv": 716398785,
+    "2035_referencial/zonas.csv": 147691
+   }
+  }
+ },
+ "cenarios": [
+  {
+   "id": "ref2035",
+   "pessoas": {
+    "n": 75601,
+    "checks": [
+     1776259297,
+     420132954,
+     7345501,
+     1649564,
+     126153014
+    ],
+    "layout": [
+     [
+      "u2",
+      0
+     ],
+     [
+      "u2",
+      151208
+     ],
+     [
+      "i4",
+      302416
+     ],
+     [
+      "i4",
+      604824
+     ],
+     [
+      "i4",
+      907232
+     ],
+     [
+      "i4",
+      1209640
+     ],
+     [
+      "i4",
+      1512048
+     ]
+    ],
+    "bytes": 1814452,
+    "duplicados_somados": 1,
+    "linhas_csv": 76009,
+    "linhas_dicionario": 2343962
+   },
+   "cargas": {
+    "n": 2571162,
+    "checks": [
+     12027238159,
+     5786376411,
+     9094444264,
+     9836829456,
+     9163214725,
+     5937096289
+    ],
+    "layout": [
+     [
+      "u2",
+      0
+     ],
+     [
+      "u2",
+      5142328
+     ],
+     [
+      "i4",
+      10284656
+     ],
+     [
+      "i4",
+      20569304
+     ],
+     [
+      "i4",
+      30853952
+     ],
+     [
+      "i4",
+      41138600
+     ],
+     [
+      "f8",
+      51423248
+     ],
+     [
+      "i4",
+      71992544
+     ]
+    ],
+    "bytes": 82277192,
+    "duplicados_somados": 0,
+    "linhas_dicionario": 31236922,
+    "linhas_csv": 31236921
+   }
+  }
+ ],
+ "saida": {
+  "matriz_od.html": {
+   "sha256": "d71ba503cc05b90fd4779e5b2cd802e4456ca01920f9ad432915e32f938bd6bf",
+   "bytes": 17224300
+  }
+ },
+ "avisos": [
+  "UTP 409 (Belém do São Francisco - PE): sede não localizada entre os municípios; usado centroide",
+  "UTP 260850 (Lagoa de Itaenga): sede não localizada entre os municípios; usado centroide",
+  "[ref2035] pessoas: CSV tem 76,009 linhas e o dicionário declara 2,343,962 — arquivo parcial; totais por unidade, entradas e saldos refletem só os pares presentes",
+  "[ref2035] pessoas: 1 par(es) OD repetido(s) no CSV foram somados"
+ ]
+}

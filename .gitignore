@@ -1,0 +1,11 @@
+# dados brutos e caches (grandes, reproduzíveis)
+data/raw/
+build/cache/
+__pycache__/
+*.pyc
+# saída gerada
+dist/
+
+# publicacao: docs/ (GitHub Pages) e deploy/ sao versionados/gerados; ZIPs oficiais (60 MB) ficam fora do repo
+deploy/
+*.zip
